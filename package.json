@@ -1,0 +1,26 @@
+{
+  "name": "p2p-momo-crypto-exchange",
+  "version": "0.1.0",
+  "description": "A P2P Mobile Money Crypto eXchange",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chizzoz/p2p-momo-crypto-exchange.git"
+  },
+  "author": "Chinyanta Mwenya",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Chizzoz/p2p-momo-crypto-exchange/issues"
+  },
+  "homepage": "https://github.com/Chizzoz/p2p-momo-crypto-exchange#readme",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "hardhat": "^2.12.2"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3"
+  }
+}
