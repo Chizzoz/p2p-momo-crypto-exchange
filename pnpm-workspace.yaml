@@ -2,3 +2,8 @@
 # used by Hardhat 3.
 allowBuilds:
   esbuild: true
+
+# mocha 12 and glob 13 ask for minimatch ^10, and no 10.x release fixes
+# GHSA-g3hv-75wg-m249. Remove this once they accept minimatch 11.
+overrides:
+  "minimatch@>=7.0.0 <11.0.1": "^11.0.1"
