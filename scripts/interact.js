@@ -1,29 +1,33 @@
-const API_KEY = process.env.API_KEY;
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+import { network } from "hardhat";
 
-// For Truffle
-// const contract = require("./build/contracts/EmpiyaP2P.sol/EmpiyaP2P.json");
+const CONTRACT_ENV_BY_NETWORK = {
+  mainnet: "ETHEREUM_CONTRACT_ADDRESS",
+  sepolia: "SEPOLIA_CONTRACT_ADDRESS",
+  polygon: "POLYGON_CONTRACT_ADDRESS",
+  amoy: "AMOY_CONTRACT_ADDRESS",
+  bsc: "BNB_CONTRACT_ADDRESS",
+  bscTestnet: "BNB_TESTNET_CONTRACT_ADDRESS",
+};
 
-// For Hardhat
-const contract = require("../artifacts/contracts/EmpiyaP2P.sol/EmpiyaP2P.json");
+const { ethers, networkName } = await network.create();
 
-// Provider
-const alchemyProvider = new ethers.providers.AlchemyProvider(network="maticmum", API_KEY);
-
-// Signer
-const signer = new ethers.Wallet(PRIVATE_KEY, alchemyProvider);
-
-// Contract
-const empiyaP2PContract = new ethers.Contract(CONTRACT_ADDRESS, contract.abi, signer);
-
-async function main() {
-  const escrowContractAddress = await empiyaP2PContract.getEscrowAddress();
-  console.log("The Escrow Contract Address is: " + escrowContractAddress);
-
-  console.log("Fetching Admin...");
-  const tx = await empiyaP2PContract.getOwner();
-  // await tx.wait();
-  console.log("The Arbitrator account is: " + tx);
+const envName = CONTRACT_ENV_BY_NETWORK[networkName];
+if (!envName) {
+  throw new Error(
+    `Network "${networkName}" is not one of the configured chains. Use deploy:ethereum, deploy:sepolia, deploy:polygon, deploy:amoy, deploy:bnb, or deploy:bnb-testnet.`
+  );
 }
-main();
+
+const contractAddress = process.env[envName];
+if (!contractAddress) {
+  throw new Error(`Set ${envName} in .env to the EmpiyaP2P address deployed on ${networkName}.`);
+}
+
+const empiyaP2PContract = await ethers.getContractAt("EmpiyaP2P", contractAddress);
+
+const escrowContractAddress = await empiyaP2PContract.getEscrowAddress();
+console.log("The Escrow Contract Address is: " + escrowContractAddress);
+
+console.log("Fetching Admin...");
+const arbitrator = await empiyaP2PContract.getOwner();
+console.log("The Arbitrator account is: " + arbitrator);

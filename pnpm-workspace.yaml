@@ -1,0 +1,4 @@
+# pnpm 11 keeps install settings here. esbuild compiles platform binaries
+# used by Hardhat 3.
+allowBuilds:
+  esbuild: true
