@@ -12,29 +12,29 @@ declare module "@nomicfoundation/hardhat-ethers/types" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
   getContractFactory(name: 'EmpiyaP2P', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EmpiyaP2P__factory>
 getContractFactory(name: 'Escrow', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.Escrow__factory>
-getContractFactory(name: 'ReentrantDepositor', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.ReentrantDepositor__factory>
 getContractFactory(name: 'FakeEscrow', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.FakeEscrow__factory>
+getContractFactory(name: 'ReentrantDepositor', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.ReentrantDepositor__factory>
 getContractFactory(name: 'RejectingRecipient', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.RejectingRecipient__factory>
 getContractFactory(name: 'ReturnDataBomb', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.ReturnDataBomb__factory>
 
   getContractAt(name: 'EmpiyaP2P', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EmpiyaP2P>
 getContractAt(name: 'Escrow', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.Escrow>
-getContractAt(name: 'ReentrantDepositor', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.ReentrantDepositor>
 getContractAt(name: 'FakeEscrow', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.FakeEscrow>
+getContractAt(name: 'ReentrantDepositor', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.ReentrantDepositor>
 getContractAt(name: 'RejectingRecipient', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.RejectingRecipient>
 getContractAt(name: 'ReturnDataBomb', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.ReturnDataBomb>
 
   deployContract(name: 'EmpiyaP2P', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EmpiyaP2P>
 deployContract(name: 'Escrow', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.Escrow>
-deployContract(name: 'ReentrantDepositor', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.ReentrantDepositor>
 deployContract(name: 'FakeEscrow', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.FakeEscrow>
+deployContract(name: 'ReentrantDepositor', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.ReentrantDepositor>
 deployContract(name: 'RejectingRecipient', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.RejectingRecipient>
 deployContract(name: 'ReturnDataBomb', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.ReturnDataBomb>
 
   deployContract(name: 'EmpiyaP2P', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EmpiyaP2P>
 deployContract(name: 'Escrow', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.Escrow>
-deployContract(name: 'ReentrantDepositor', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.ReentrantDepositor>
 deployContract(name: 'FakeEscrow', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.FakeEscrow>
+deployContract(name: 'ReentrantDepositor', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.ReentrantDepositor>
 deployContract(name: 'RejectingRecipient', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.RejectingRecipient>
 deployContract(name: 'ReturnDataBomb', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.ReturnDataBomb>
 
