@@ -6,22 +6,24 @@ import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, Typed
   
 export declare namespace UserTransactionType {
       
-    export type UserTransactionStruct = {transactionNumber: BytesLike, amount: BigNumberish, status: BigNumberish, recipient: AddressLike, reservedAt: BigNumberish}
+    export type UserTransactionStruct = {transactionNumber: BytesLike, amount: BigNumberish, status: BigNumberish, recipient: AddressLike, reservedAt: BigNumberish, reservationId: BigNumberish}
 
-    export type UserTransactionStructOutput = [transactionNumber: string, amount: bigint, status: bigint, recipient: string, reservedAt: bigint] & {transactionNumber: string, amount: bigint, status: bigint, recipient: string, reservedAt: bigint }
+    export type UserTransactionStructOutput = [transactionNumber: string, amount: bigint, status: bigint, recipient: string, reservedAt: bigint, reservationId: bigint] & {transactionNumber: string, amount: bigint, status: bigint, recipient: string, reservedAt: bigint, reservationId: bigint }
   
     }
 
   export interface EmpiyaP2PInterface extends Interface {
-    getFunction(nameOrSignature: "RESERVATION_TIMEOUT" | "acceptAdmin" | "admin" | "cancelAdminProposal" | "deposit" | "escrowCodeHash" | "expireReservation" | "getCaller" | "getEscrowAddress" | "getOwner" | "getTotalBalance" | "getTransactionsByUser" | "getUserBalance" | "getUserTransaction" | "getUserTransactionByUser" | "getUserTransactions" | "getUserTransactionsPage" | "maxDeposit" | "maxOutstanding" | "pause" | "paused" | "pendingAdmin" | "proposeAdmin" | "refundSeller" | "releaseToBuyer" | "reserve" | "retiredEscrows" | "setDepositLimits" | "setEscrowContract" | "unpause" | "withdraw" | "withdrawRetiredEscrowSurplus" | "withdrawSurplus"): FunctionFragment;
+    getFunction(nameOrSignature: "RESERVATION_TIMEOUT" | "TOKEN_DECIMALS" | "acceptAdmin" | "admin" | "cancelAdminProposal" | "deposit" | "depositAndReserve" | "escrowCodeHash" | "expireReservation" | "getCaller" | "getEscrowAddress" | "getOwner" | "getTotalBalance" | "getTransactionsByUser" | "getUserBalance" | "getUserTransaction" | "getUserTransactionByUser" | "getUserTransactions" | "getUserTransactionsPage" | "maxDeposit" | "maxOutstanding" | "operator" | "pause" | "paused" | "pendingAdmin" | "proposeAdmin" | "refundSeller" | "releaseToBuyer" | "rescueRetiredEscrowToken" | "rescueToken" | "reserve" | "retiredEscrows" | "setDepositLimits" | "setEscrowContract" | "setOperator" | "token" | "unpause" | "withdraw" | "withdrawRetiredEscrowSurplus" | "withdrawSurplus"): FunctionFragment;
 
-    getEvent(nameOrSignatureOrTopic: "AdminAccepted" | "AdminProposalCancelled" | "AdminProposed" | "DepositLimitsUpdated" | "EscrowUpdated" | "Paused" | "Unpaused"): EventFragment;
+    getEvent(nameOrSignatureOrTopic: "AdminAccepted" | "AdminProposalCancelled" | "AdminProposed" | "DepositLimitsUpdated" | "EscrowUpdated" | "OperatorUpdated" | "Paused" | "Unpaused"): EventFragment;
 
     encodeFunctionData(functionFragment: 'RESERVATION_TIMEOUT', values?: undefined): string;
+encodeFunctionData(functionFragment: 'TOKEN_DECIMALS', values?: undefined): string;
 encodeFunctionData(functionFragment: 'acceptAdmin', values?: undefined): string;
 encodeFunctionData(functionFragment: 'admin', values?: undefined): string;
 encodeFunctionData(functionFragment: 'cancelAdminProposal', values?: undefined): string;
-encodeFunctionData(functionFragment: 'deposit', values?: undefined): string;
+encodeFunctionData(functionFragment: 'deposit', values: [BigNumberish]): string;
+encodeFunctionData(functionFragment: 'depositAndReserve', values: [BigNumberish, AddressLike]): string;
 encodeFunctionData(functionFragment: 'escrowCodeHash', values?: undefined): string;
 encodeFunctionData(functionFragment: 'expireReservation', values: [AddressLike, BigNumberish, BytesLike]): string;
 encodeFunctionData(functionFragment: 'getCaller', values?: undefined): string;
@@ -36,26 +38,33 @@ encodeFunctionData(functionFragment: 'getUserTransactions', values?: undefined):
 encodeFunctionData(functionFragment: 'getUserTransactionsPage', values: [BigNumberish, BigNumberish]): string;
 encodeFunctionData(functionFragment: 'maxDeposit', values?: undefined): string;
 encodeFunctionData(functionFragment: 'maxOutstanding', values?: undefined): string;
+encodeFunctionData(functionFragment: 'operator', values?: undefined): string;
 encodeFunctionData(functionFragment: 'pause', values?: undefined): string;
 encodeFunctionData(functionFragment: 'paused', values?: undefined): string;
 encodeFunctionData(functionFragment: 'pendingAdmin', values?: undefined): string;
 encodeFunctionData(functionFragment: 'proposeAdmin', values: [AddressLike]): string;
-encodeFunctionData(functionFragment: 'refundSeller', values: [AddressLike, BigNumberish, BytesLike]): string;
-encodeFunctionData(functionFragment: 'releaseToBuyer', values: [AddressLike, BigNumberish, BytesLike, AddressLike]): string;
+encodeFunctionData(functionFragment: 'refundSeller', values: [AddressLike, BigNumberish, BytesLike, BigNumberish]): string;
+encodeFunctionData(functionFragment: 'releaseToBuyer', values: [AddressLike, BigNumberish, BytesLike, AddressLike, BigNumberish]): string;
+encodeFunctionData(functionFragment: 'rescueRetiredEscrowToken', values: [AddressLike, AddressLike, AddressLike]): string;
+encodeFunctionData(functionFragment: 'rescueToken', values: [AddressLike, AddressLike]): string;
 encodeFunctionData(functionFragment: 'reserve', values: [BigNumberish, BytesLike, AddressLike]): string;
 encodeFunctionData(functionFragment: 'retiredEscrows', values: [AddressLike]): string;
 encodeFunctionData(functionFragment: 'setDepositLimits', values: [BigNumberish, BigNumberish]): string;
 encodeFunctionData(functionFragment: 'setEscrowContract', values: [AddressLike]): string;
+encodeFunctionData(functionFragment: 'setOperator', values: [AddressLike]): string;
+encodeFunctionData(functionFragment: 'token', values?: undefined): string;
 encodeFunctionData(functionFragment: 'unpause', values?: undefined): string;
 encodeFunctionData(functionFragment: 'withdraw', values: [BigNumberish, BytesLike]): string;
 encodeFunctionData(functionFragment: 'withdrawRetiredEscrowSurplus', values: [AddressLike, AddressLike]): string;
 encodeFunctionData(functionFragment: 'withdrawSurplus', values: [AddressLike]): string;
 
     decodeFunctionResult(functionFragment: 'RESERVATION_TIMEOUT', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'TOKEN_DECIMALS', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'acceptAdmin', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'admin', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'cancelAdminProposal', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'deposit', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'depositAndReserve', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'escrowCodeHash', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'expireReservation', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'getCaller', data: BytesLike): Result;
@@ -70,16 +79,21 @@ decodeFunctionResult(functionFragment: 'getUserTransactions', data: BytesLike): 
 decodeFunctionResult(functionFragment: 'getUserTransactionsPage', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'maxDeposit', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'maxOutstanding', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'operator', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'pause', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'paused', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'pendingAdmin', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'proposeAdmin', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'refundSeller', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'releaseToBuyer', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'rescueRetiredEscrowToken', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'rescueToken', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'reserve', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'retiredEscrows', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'setDepositLimits', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'setEscrowContract', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'setOperator', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'token', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'unpause', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'withdraw', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'withdrawRetiredEscrowSurplus', data: BytesLike): Result;
@@ -147,10 +161,22 @@ decodeFunctionResult(functionFragment: 'withdrawSurplus', data: BytesLike): Resu
 
   
 
+    export namespace OperatorUpdatedEvent {
+      export type InputTuple = [previousOperator: AddressLike, newOperator: AddressLike];
+      export type OutputTuple = [previousOperator: string, newOperator: string];
+      export interface OutputObject {previousOperator: string, newOperator: string }
+      export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>
+      export type Filter = TypedDeferredTopicFilter<Event>
+      export type Log = TypedEventLog<Event>
+      export type LogDescription = TypedLogDescription<Event>
+    }
+
+  
+
     export namespace PausedEvent {
-      export type InputTuple = [admin: AddressLike];
-      export type OutputTuple = [admin: string];
-      export interface OutputObject {admin: string }
+      export type InputTuple = [account: AddressLike];
+      export type OutputTuple = [account: string];
+      export interface OutputObject {account: string }
       export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>
       export type Filter = TypedDeferredTopicFilter<Event>
       export type Log = TypedEventLog<Event>
@@ -160,9 +186,9 @@ decodeFunctionResult(functionFragment: 'withdrawSurplus', data: BytesLike): Resu
   
 
     export namespace UnpausedEvent {
-      export type InputTuple = [admin: AddressLike];
-      export type OutputTuple = [admin: string];
-      export interface OutputObject {admin: string }
+      export type InputTuple = [account: AddressLike];
+      export type OutputTuple = [account: string];
+      export interface OutputObject {account: string }
       export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>
       export type Filter = TypedDeferredTopicFilter<Event>
       export type Log = TypedEventLog<Event>
@@ -213,6 +239,14 @@ decodeFunctionResult(functionFragment: 'withdrawSurplus', data: BytesLike): Resu
     
 
     
+    TOKEN_DECIMALS: TypedContractMethod<
+      [],
+      [bigint],
+      'view'
+    >
+    
+
+    
     acceptAdmin: TypedContractMethod<
       [],
       [void],
@@ -238,9 +272,17 @@ decodeFunctionResult(functionFragment: 'withdrawSurplus', data: BytesLike): Resu
 
     
     deposit: TypedContractMethod<
-      [],
+      [amount: BigNumberish, ],
       [[bigint, UserTransactionType.UserTransactionStructOutput]],
-      'payable'
+      'nonpayable'
+    >
+    
+
+    
+    depositAndReserve: TypedContractMethod<
+      [amount: BigNumberish, buyer: AddressLike, ],
+      [[bigint, UserTransactionType.UserTransactionStructOutput] & {transactionKey: bigint, userTransaction: UserTransactionType.UserTransactionStructOutput }],
+      'nonpayable'
     >
     
 
@@ -357,6 +399,14 @@ decodeFunctionResult(functionFragment: 'withdrawSurplus', data: BytesLike): Resu
     
 
     
+    operator: TypedContractMethod<
+      [],
+      [string],
+      'view'
+    >
+    
+
+    
     pause: TypedContractMethod<
       [],
       [void],
@@ -390,7 +440,7 @@ decodeFunctionResult(functionFragment: 'withdrawSurplus', data: BytesLike): Resu
 
     
     refundSeller: TypedContractMethod<
-      [depositor: AddressLike, transactionKey: BigNumberish, transactionNumber: BytesLike, ],
+      [depositor: AddressLike, transactionKey: BigNumberish, transactionNumber: BytesLike, reservationId: BigNumberish, ],
       [[bigint, UserTransactionType.UserTransactionStructOutput] & {_transactionKey: bigint, userTransaction: UserTransactionType.UserTransactionStructOutput }],
       'nonpayable'
     >
@@ -398,8 +448,24 @@ decodeFunctionResult(functionFragment: 'withdrawSurplus', data: BytesLike): Resu
 
     
     releaseToBuyer: TypedContractMethod<
-      [depositor: AddressLike, transactionKey: BigNumberish, transactionNumber: BytesLike, buyer: AddressLike, ],
+      [depositor: AddressLike, transactionKey: BigNumberish, transactionNumber: BytesLike, buyer: AddressLike, reservationId: BigNumberish, ],
       [[bigint, UserTransactionType.UserTransactionStructOutput] & {_transactionKey: bigint, userTransaction: UserTransactionType.UserTransactionStructOutput }],
+      'nonpayable'
+    >
+    
+
+    
+    rescueRetiredEscrowToken: TypedContractMethod<
+      [retiredEscrow: AddressLike, other: AddressLike, to: AddressLike, ],
+      [void],
+      'nonpayable'
+    >
+    
+
+    
+    rescueToken: TypedContractMethod<
+      [other: AddressLike, to: AddressLike, ],
+      [void],
       'nonpayable'
     >
     
@@ -433,6 +499,22 @@ decodeFunctionResult(functionFragment: 'withdrawSurplus', data: BytesLike): Resu
       [escrowContractAccount: AddressLike, ],
       [string],
       'nonpayable'
+    >
+    
+
+    
+    setOperator: TypedContractMethod<
+      [newOperator: AddressLike, ],
+      [void],
+      'nonpayable'
+    >
+    
+
+    
+    token: TypedContractMethod<
+      [],
+      [string],
+      'view'
     >
     
 
@@ -476,6 +558,11 @@ decodeFunctionResult(functionFragment: 'withdrawSurplus', data: BytesLike): Resu
       [bigint],
       'view'
     >;
+getFunction(nameOrSignature: 'TOKEN_DECIMALS'): TypedContractMethod<
+      [],
+      [bigint],
+      'view'
+    >;
 getFunction(nameOrSignature: 'acceptAdmin'): TypedContractMethod<
       [],
       [void],
@@ -492,9 +579,14 @@ getFunction(nameOrSignature: 'cancelAdminProposal'): TypedContractMethod<
       'nonpayable'
     >;
 getFunction(nameOrSignature: 'deposit'): TypedContractMethod<
-      [],
+      [amount: BigNumberish, ],
       [[bigint, UserTransactionType.UserTransactionStructOutput]],
-      'payable'
+      'nonpayable'
+    >;
+getFunction(nameOrSignature: 'depositAndReserve'): TypedContractMethod<
+      [amount: BigNumberish, buyer: AddressLike, ],
+      [[bigint, UserTransactionType.UserTransactionStructOutput] & {transactionKey: bigint, userTransaction: UserTransactionType.UserTransactionStructOutput }],
+      'nonpayable'
     >;
 getFunction(nameOrSignature: 'escrowCodeHash'): TypedContractMethod<
       [],
@@ -566,6 +658,11 @@ getFunction(nameOrSignature: 'maxOutstanding'): TypedContractMethod<
       [bigint],
       'view'
     >;
+getFunction(nameOrSignature: 'operator'): TypedContractMethod<
+      [],
+      [string],
+      'view'
+    >;
 getFunction(nameOrSignature: 'pause'): TypedContractMethod<
       [],
       [void],
@@ -587,13 +684,23 @@ getFunction(nameOrSignature: 'proposeAdmin'): TypedContractMethod<
       'nonpayable'
     >;
 getFunction(nameOrSignature: 'refundSeller'): TypedContractMethod<
-      [depositor: AddressLike, transactionKey: BigNumberish, transactionNumber: BytesLike, ],
+      [depositor: AddressLike, transactionKey: BigNumberish, transactionNumber: BytesLike, reservationId: BigNumberish, ],
       [[bigint, UserTransactionType.UserTransactionStructOutput] & {_transactionKey: bigint, userTransaction: UserTransactionType.UserTransactionStructOutput }],
       'nonpayable'
     >;
 getFunction(nameOrSignature: 'releaseToBuyer'): TypedContractMethod<
-      [depositor: AddressLike, transactionKey: BigNumberish, transactionNumber: BytesLike, buyer: AddressLike, ],
+      [depositor: AddressLike, transactionKey: BigNumberish, transactionNumber: BytesLike, buyer: AddressLike, reservationId: BigNumberish, ],
       [[bigint, UserTransactionType.UserTransactionStructOutput] & {_transactionKey: bigint, userTransaction: UserTransactionType.UserTransactionStructOutput }],
+      'nonpayable'
+    >;
+getFunction(nameOrSignature: 'rescueRetiredEscrowToken'): TypedContractMethod<
+      [retiredEscrow: AddressLike, other: AddressLike, to: AddressLike, ],
+      [void],
+      'nonpayable'
+    >;
+getFunction(nameOrSignature: 'rescueToken'): TypedContractMethod<
+      [other: AddressLike, to: AddressLike, ],
+      [void],
       'nonpayable'
     >;
 getFunction(nameOrSignature: 'reserve'): TypedContractMethod<
@@ -615,6 +722,16 @@ getFunction(nameOrSignature: 'setEscrowContract'): TypedContractMethod<
       [escrowContractAccount: AddressLike, ],
       [string],
       'nonpayable'
+    >;
+getFunction(nameOrSignature: 'setOperator'): TypedContractMethod<
+      [newOperator: AddressLike, ],
+      [void],
+      'nonpayable'
+    >;
+getFunction(nameOrSignature: 'token'): TypedContractMethod<
+      [],
+      [string],
+      'view'
     >;
 getFunction(nameOrSignature: 'unpause'): TypedContractMethod<
       [],
@@ -642,6 +759,7 @@ getEvent(key: 'AdminProposalCancelled'): TypedContractEvent<AdminProposalCancell
 getEvent(key: 'AdminProposed'): TypedContractEvent<AdminProposedEvent.InputTuple, AdminProposedEvent.OutputTuple, AdminProposedEvent.OutputObject>;
 getEvent(key: 'DepositLimitsUpdated'): TypedContractEvent<DepositLimitsUpdatedEvent.InputTuple, DepositLimitsUpdatedEvent.OutputTuple, DepositLimitsUpdatedEvent.OutputObject>;
 getEvent(key: 'EscrowUpdated'): TypedContractEvent<EscrowUpdatedEvent.InputTuple, EscrowUpdatedEvent.OutputTuple, EscrowUpdatedEvent.OutputObject>;
+getEvent(key: 'OperatorUpdated'): TypedContractEvent<OperatorUpdatedEvent.InputTuple, OperatorUpdatedEvent.OutputTuple, OperatorUpdatedEvent.OutputObject>;
 getEvent(key: 'Paused'): TypedContractEvent<PausedEvent.InputTuple, PausedEvent.OutputTuple, PausedEvent.OutputObject>;
 getEvent(key: 'Unpaused'): TypedContractEvent<UnpausedEvent.InputTuple, UnpausedEvent.OutputTuple, UnpausedEvent.OutputObject>;
 
@@ -665,6 +783,10 @@ getEvent(key: 'Unpaused'): TypedContractEvent<UnpausedEvent.InputTuple, Unpaused
 
       'EscrowUpdated(address,address)': TypedContractEvent<EscrowUpdatedEvent.InputTuple, EscrowUpdatedEvent.OutputTuple, EscrowUpdatedEvent.OutputObject>;
       EscrowUpdated: TypedContractEvent<EscrowUpdatedEvent.InputTuple, EscrowUpdatedEvent.OutputTuple, EscrowUpdatedEvent.OutputObject>;
+    
+
+      'OperatorUpdated(address,address)': TypedContractEvent<OperatorUpdatedEvent.InputTuple, OperatorUpdatedEvent.OutputTuple, OperatorUpdatedEvent.OutputObject>;
+      OperatorUpdated: TypedContractEvent<OperatorUpdatedEvent.InputTuple, OperatorUpdatedEvent.OutputTuple, OperatorUpdatedEvent.OutputObject>;
     
 
       'Paused(address)': TypedContractEvent<PausedEvent.InputTuple, PausedEvent.OutputTuple, PausedEvent.OutputObject>;
