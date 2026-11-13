@@ -3,3 +3,4 @@
 /* eslint-disable */
 export * as empiyaP2PSol from './EmpiyaP2P.sol/index.js';
 export * as test from './test/index.js';
+export { EmpiyaPayments__factory } from './EmpiyaPayments__factory.js';

@@ -12,14 +12,17 @@
     "deploy": "hardhat run scripts/deploy.js",
     "deploy:ethereum": "hardhat run scripts/deploy.js --network mainnet",
     "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
-    "deploy:polygon": "hardhat run scripts/deploy.js --network polygon",
-    "deploy:amoy": "hardhat run scripts/deploy.js --network amoy",
     "deploy:bnb": "hardhat run scripts/deploy.js --network bsc",
     "deploy:bnb-testnet": "hardhat run scripts/deploy.js --network bscTestnet",
+    "deploy-payments": "hardhat run scripts/deploy-payments.js",
+    "deploy-payments:ethereum": "hardhat run scripts/deploy-payments.js --network mainnet",
+    "deploy-payments:sepolia": "hardhat run scripts/deploy-payments.js --network sepolia",
+    "deploy-payments:bnb": "hardhat run scripts/deploy-payments.js --network bsc",
+    "deploy-payments:bnb-testnet": "hardhat run scripts/deploy-payments.js --network bscTestnet",
+    "deploy:mock-usdt:bnb-testnet": "hardhat run scripts/deploy-mock-usdt.js --network bscTestnet",
+    "deploy:mock-usdt:sepolia": "hardhat run scripts/deploy-mock-usdt.js --network sepolia",
     "interact:ethereum": "hardhat run scripts/interact.js --network mainnet",
     "interact:sepolia": "hardhat run scripts/interact.js --network sepolia",
-    "interact:polygon": "hardhat run scripts/interact.js --network polygon",
-    "interact:amoy": "hardhat run scripts/interact.js --network amoy",
     "interact:bnb": "hardhat run scripts/interact.js --network bsc",
     "interact:bnb-testnet": "hardhat run scripts/interact.js --network bscTestnet"
   },
@@ -52,6 +55,7 @@
     "mocha": "^12.0.3"
   },
   "dependencies": {
+    "@openzeppelin/contracts": "5.4.0",
     "dotenv": "^16.0.3"
   }
 }
