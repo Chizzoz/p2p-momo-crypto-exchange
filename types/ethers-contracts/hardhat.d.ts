@@ -15,8 +15,8 @@ getContractFactory(name: 'Escrow', signerOrOptions?: ethers.Signer | FactoryOpti
 getContractFactory(name: 'EmpiyaPayments', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.EmpiyaPayments__factory>
 getContractFactory(name: 'FakeEscrow', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.FakeEscrow__factory>
 getContractFactory(name: 'FeeOnTransferToken', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.FeeOnTransferToken__factory>
-getContractFactory(name: 'MockUSDT', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.MockUSDT__factory>
 getContractFactory(name: 'ReentrantDepositor', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.ReentrantDepositor__factory>
+getContractFactory(name: 'MockUSDT', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.MockUSDT__factory>
 getContractFactory(name: 'IEmpiyaP2P', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.IEmpiyaP2P__factory>
 getContractFactory(name: 'IEmpiyaPayments', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.IEmpiyaPayments__factory>
 getContractFactory(name: 'ReentrantToken', signerOrOptions?: ethers.Signer | FactoryOptions): Promise<Contracts.ReentrantToken__factory>
@@ -28,8 +28,8 @@ getContractAt(name: 'Escrow', address: string | ethers.Addressable, signer?: eth
 getContractAt(name: 'EmpiyaPayments', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.EmpiyaPayments>
 getContractAt(name: 'FakeEscrow', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.FakeEscrow>
 getContractAt(name: 'FeeOnTransferToken', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.FeeOnTransferToken>
-getContractAt(name: 'MockUSDT', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.MockUSDT>
 getContractAt(name: 'ReentrantDepositor', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.ReentrantDepositor>
+getContractAt(name: 'MockUSDT', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.MockUSDT>
 getContractAt(name: 'IEmpiyaP2P', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.IEmpiyaP2P>
 getContractAt(name: 'IEmpiyaPayments', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.IEmpiyaPayments>
 getContractAt(name: 'ReentrantToken', address: string | ethers.Addressable, signer?: ethers.Signer): Promise<Contracts.ReentrantToken>
@@ -41,8 +41,8 @@ deployContract(name: 'Escrow', signerOrOptions?: ethers.Signer | DeployContractO
 deployContract(name: 'EmpiyaPayments', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EmpiyaPayments>
 deployContract(name: 'FakeEscrow', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.FakeEscrow>
 deployContract(name: 'FeeOnTransferToken', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.FeeOnTransferToken>
-deployContract(name: 'MockUSDT', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.MockUSDT>
 deployContract(name: 'ReentrantDepositor', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.ReentrantDepositor>
+deployContract(name: 'MockUSDT', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.MockUSDT>
 deployContract(name: 'IEmpiyaP2P', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.IEmpiyaP2P>
 deployContract(name: 'IEmpiyaPayments', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.IEmpiyaPayments>
 deployContract(name: 'ReentrantToken', signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.ReentrantToken>
@@ -54,8 +54,8 @@ deployContract(name: 'Escrow', args: any[], signerOrOptions?: ethers.Signer | De
 deployContract(name: 'EmpiyaPayments', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.EmpiyaPayments>
 deployContract(name: 'FakeEscrow', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.FakeEscrow>
 deployContract(name: 'FeeOnTransferToken', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.FeeOnTransferToken>
-deployContract(name: 'MockUSDT', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.MockUSDT>
 deployContract(name: 'ReentrantDepositor', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.ReentrantDepositor>
+deployContract(name: 'MockUSDT', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.MockUSDT>
 deployContract(name: 'IEmpiyaP2P', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.IEmpiyaP2P>
 deployContract(name: 'IEmpiyaPayments', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.IEmpiyaPayments>
 deployContract(name: 'ReentrantToken', args: any[], signerOrOptions?: ethers.Signer | DeployContractOptions): Promise<Contracts.ReentrantToken>
