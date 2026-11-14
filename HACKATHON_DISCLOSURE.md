@@ -20,7 +20,7 @@ The contracts repo was **not** started from a blank template during the hackatho
 | Tooling | Hardhat project, compile/test/coverage, deploy + interact scripts |
 | Tokens | `MockUSDT` (and related test tokens) for Sepolia / local testing |
 | Config | Multi-network `.env` layout (Sepolia first; Ethereum / optional BSC prefixes), deposit & payment caps, reservation / claim delays |
-| Docs | README describing three services (list → buy, buyer-first, pay & redeem) |
+| Docs | README describing three services (Sell USDT, Sell MoMo / buyer-first, Pay with USDT) |
 
 **Baseline intent of the prior contracts:** on-chain source of truth for USDT custody; an **operator** key authorized to release or refund after off-chain MoMo confirmation. Fiat collection/payout itself was always designed to live in the **webapp + PawaPay**, not inside Solidity.
 
@@ -79,7 +79,7 @@ The **webapp** owns the new MoMo orchestration (PawaPay deposits/payouts, webhoo
 | Local deploy with MockUSDT | Available via Hardhat scripts |
 | Sepolia deploy | Possible, but often paired with hard-to-fund public test USDT |
 | End-to-end MoMo buy/sell | **Not complete** — needed webapp + operator + PawaPay |
-| Pay & redeem | Contract present; **no full product loop** without webapp settle/refund |
+| Pay with USDT | Contract present; **no full product loop** without webapp settle/refund |
 | Production demo usability | Protocol readable; **not a finished user journey** |
 
 ### Now
@@ -88,11 +88,12 @@ The **webapp** owns the new MoMo orchestration (PawaPay deposits/payouts, webhoo
 | --- | --- |
 | Sepolia EmpiyaP2P + EmpiyaPayments live with mintable MockUSDT | **Yes** (demo addresses in env / webapp Dokploy docs) |
 | Seller can deposit USDT from funded wallets | **Yes** (via webapp listing modal + MetaMask) |
-| Operator can release / settle from server-held key | **Yes** (webapp `EmpiyaOperatorService` + `empiya-operator.mjs`) |
+| Filler can `depositAndReserve` for Sell MoMo | **Yes** (webapp MoMo offers fill path) |
+| Operator can release / settle / refund from server-held key | **Yes** (webapp `EmpiyaOperatorService` + `empiya-operator.mjs`) |
 | Sandbox MoMo deposit/payout against PawaPay | **Yes** (webapp; contracts only see resulting release/settle txs) |
 | Mainnet / KYC / production cutover | **Out of scope** — still Sepolia + sandbox MoMo |
 
-**Summary:** Before, the contracts were a **credible escrow/payments protocol**. Now they are the **live Sepolia settlement layer** behind a working demo of list → buy with MoMo and pay & redeem, with operator actions driven from the webapp.
+**Summary:** Before, the contracts were a **credible escrow/payments protocol**. Now they are the **live Sepolia settlement layer** behind a working demo of Sell USDT, Sell MoMo, and Pay with USDT, with operator actions driven from the webapp.
 
 ---
 
