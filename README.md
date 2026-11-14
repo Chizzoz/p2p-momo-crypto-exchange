@@ -21,11 +21,11 @@ In markets such as Zambia, buying or selling crypto often requires a bank accoun
 
 **Launch order:** Ethereum Sepolia (chain ID `11155111`), then Ethereum mainnet (chain ID `1`) with native Tether USD₮. BNB Smart Chain is optional later — the same contracts can deploy there with different constructor arguments, but the widely labeled “USDT” on BSC is Binance-Peg BSC-USD, not Tether-issued USD₮. Token address and decimals are constructor arguments (chain-agnostic).
 
-## Three services
+## Three services (product names)
 
-1. **Seller lists USDT.** Seller approves USDT and calls `deposit`. Buyer requests the listing in the app. Seller accepts with on-chain `reserve(buyer)`. Buyer pays MoMo via PawaPay. After confirmation, the operator calls `releaseToBuyer`. Seller receives MoMo payout off-chain.
-2. **Buyer order first.** Buyer pays MoMo first. A seller fills with `depositAndReserve` in one transaction. Operator releases when it sees `Reserved`.
-3. **Pay a shop or phone number.** Payer calls `EmpiyaPayments.pay`. Platform pays the recipient from fiat liquidity via PawaPay. On payout success the operator `settle`s USDT to treasury; on failure it `refund`s. Payer may `claimBack` only after a long claim delay (default 7 days).
+1. **Sell USDT.** Seller approves USDT and calls `deposit`. Buyer requests the listing in the app. Seller accepts with on-chain `reserve(buyer)`. Buyer pays MoMo via PawaPay. After confirmation, the operator calls `releaseToBuyer`. The webapp credits the seller’s **per-currency fiat wallet** (MoMo withdraw is manual).
+2. **Sell MoMo.** MoMo seller pays fiat first (PawaPay collect) and opens an offer. A USDT counterparty fills with `depositAndReserve` in one transaction. Operator releases when it sees `Reserved`.
+3. **Pay with USDT.** Payer calls `EmpiyaPayments.pay`. Platform pays the recipient from fiat liquidity via PawaPay. On payout success the operator `settle`s USDT to treasury; on failure it `refund`s. Payer may `claimBack` only after a long claim delay (default 7 days).
 
 Partial fills are not supported. Each deposit is reserved whole (lot-sized listings).
 
@@ -122,11 +122,11 @@ A compromised operator can release to a named buyer early or refund; it cannot r
 
 1. Before MoMo collect, confirm deposit is `Processing`, `recipient` is the buyer, and enough of the reservation window remains.
 2. Pass the same wallet + `reservationId` to `releaseToBuyer`.
-3. Credit seller fiat only after a matching `Released` event (then MoMo payout).
-4. Use big-integer math for ZMW ↔ USDT ↔ base units; round in the platform’s favour.
+3. Credit seller **fiat wallet** only after a matching `Released` event (do not auto-disburse MoMo on release).
+4. Use big-integer math for fiat ↔ USDT ↔ base units; round in the platform’s favour. Format PawaPay amounts to the **provider’s allowed decimals** (never Eloquent `decimal:8` padding).
 5. Prefer finalized / multi-RPC confirmation before irreversible MoMo moves.
 6. Store `chainId` with every listing, reservation, and payment.
-7. EmpiyaPayments: exact USDT quote; wait for finality before payout; settle only on verified success; refund on confirmed failure.
+7. EmpiyaPayments: exact USDT quote; wait for finality before payout; settle only on verified success; **refund immediately on REJECTED/FAILED** payout (payer `claimBack` remains the delayed fallback).
 8. Enforce a minimum trade size in the backend. Sellers/payers need gas ETH; pure USDT receivers do not.
 9. Ethereum-style USDT: reset allowance to `0` before setting a new non-zero amount.
 
