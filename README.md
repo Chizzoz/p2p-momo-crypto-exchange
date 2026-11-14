@@ -1,30 +1,47 @@
 # e-Mpiya P2P MoMo Crypto eXchange
 
-Smart contracts for a peer-to-peer exchange that holds **USDT** in escrow while a mobile-money payment settles off chain, plus a separate payments contract for shop and phone-number payouts funded from the platform's own fiat liquidity. This repository is the Hardhat project. The web app lives separately.
+Smart contracts for a peer-to-peer exchange that holds **USDT** in escrow while a mobile-money payment settles off chain, plus a separate payments contract for shop and phone-number payouts funded from the platform's own fiat liquidity.
 
-1. Frontend repository: https://github.com/Chizzoz/p2p-momo-crypto-echange-webapp
-2. Demo DApp: https://p2p.oneziko.com/
-3. This repository: https://github.com/Chizzoz/p2p-momo-crypto-exchange
+This repository is the **Hardhat** project. The web app lives separately.
+
+**Hackathon judges:** see [HACKATHON_DISCLOSURE.md](./HACKATHON_DISCLOSURE.md) for pre-existing vs new work.
+
+1. Frontend repository: https://github.com/Chizzoz/p2p-momo-crypto-echange-webapp  
+2. Demo DApp: https://p2p.oneziko.com/  
+3. This repository: https://github.com/Chizzoz/p2p-momo-crypto-exchange  
 
 ## About the DApp
 
-The DApp uses Hardhat, ethers.js, Alchemy, MetaMask, Etherscan, BscScan, Laravel 9, Laravel Jetstream, Inertia, React (TypeScript), Tailwind CSS, MySQL, and PawaPay (and related mobile-money APIs).
+In markets such as Zambia, buying or selling crypto often requires a bank account and a Visa or Mastercard. Mobile-money accounts are more common. e-Mpiya lets people trade and pay through MoMo, with these contracts holding USDT until the fiat side is confirmed.
 
-In countries such as Zambia, buying or selling crypto often requires a bank account and a Visa or Mastercard. Mobile-money accounts are more common than bank accounts. e-Mpiya lets people trade and pay through mobile money, with these contracts holding USDT until the fiat side is confirmed.
+| Layer | Stack |
+| --- | --- |
+| Contracts (this repo) | Hardhat 3, Solidity 0.8.38, ethers.js, OpenZeppelin-style patterns, Alchemy / public RPC |
+| Webapp (sibling repo) | Laravel 13, Jetstream, Inertia 2, React (TypeScript), Tailwind, MetaMask, PawaPay, Dokploy/FrankenPHP |
 
-**Launch order:** Ethereum Sepolia (chain ID 11155111), then Ethereum mainnet (chain ID 1) with native Tether USD₮. BNB Smart Chain is optional later: the same contracts can deploy there with different constructor arguments, but the widely labeled “USDT” on BSC is Binance-Peg BSC-USD, not Tether-issued USD₮. The contracts are chain-agnostic: the token address and decimals are constructor arguments.
+**Launch order:** Ethereum Sepolia (chain ID `11155111`), then Ethereum mainnet (chain ID `1`) with native Tether USD₮. BNB Smart Chain is optional later — the same contracts can deploy there with different constructor arguments, but the widely labeled “USDT” on BSC is Binance-Peg BSC-USD, not Tether-issued USD₮. Token address and decimals are constructor arguments (chain-agnostic).
 
 ## Three services
 
-1. **Seller lists USDT.** The seller approves USDT and calls `deposit`. A buyer requests the listing in the app. The seller accepts by calling `reserve` with the buyer's wallet. The buyer pays Kwacha into the e-Mpiya merchant account. After PawaPay confirms, the operator calls `releaseToBuyer`. The seller's pending fiat becomes withdrawable off-chain.
-2. **Buyer order first.** The buyer pays Kwacha first. A seller fills the order with `depositAndReserve` in one transaction. The operator releases as soon as it sees `Reserved`.
-3. **Pay a shop or phone number.** The payer calls `EmpiyaPayments.pay`. The platform pays the shop from its own fiat liquidity. After the PawaPay payout callback, the operator settles USDT to the treasury. If the payout fails, the operator refunds the payer. The payer may `claimBack` only after a long claim delay (default 7 days).
+1. **Seller lists USDT.** Seller approves USDT and calls `deposit`. Buyer requests the listing in the app. Seller accepts with on-chain `reserve(buyer)`. Buyer pays MoMo via PawaPay. After confirmation, the operator calls `releaseToBuyer`. Seller receives MoMo payout off-chain.
+2. **Buyer order first.** Buyer pays MoMo first. A seller fills with `depositAndReserve` in one transaction. Operator releases when it sees `Reserved`.
+3. **Pay a shop or phone number.** Payer calls `EmpiyaPayments.pay`. Platform pays the recipient from fiat liquidity via PawaPay. On payout success the operator `settle`s USDT to treasury; on failure it `refund`s. Payer may `claimBack` only after a long claim delay (default 7 days).
 
-Partial fills are not supported. Each deposit is reserved whole, so sellers post lot-sized listings. In service 2 the seller deposits exactly the order amount.
+Partial fills are not supported. Each deposit is reserved whole (lot-sized listings).
+
+## Current Sepolia demo deploy
+
+| Contract | Address |
+| --- | --- |
+| Mock USDT (6 decimals) | `0x2A51b5d05bbbDAB5A5746ed35C1A7708f7ADe6eD` |
+| EmpiyaP2P | `0x76E69285D4dED0E5959F219014D4a64fc612d9Be` |
+| EmpiyaPayments | `0x10C38D531d6C93E16ABc2f34b091a8E07B77C0de` |
+
+Copy these into the webapp as `VITE_*` **build args** and `EMPIYA_*` runtime env after any redeploy. Mint test USDT with `MockUSDT.mint` (or `pnpm deploy:mock-usdt:sepolia` for a fresh token + mint).
 
 ## Setup
 
-Install [pnpm](https://pnpm.io/) 11.3.0 (the version pinned in `package.json`) and Node.js 22.13 or later. This repository uses Hardhat 3.
+Install [pnpm](https://pnpm.io/) 11.3.0 (pinned in `package.json`) and Node.js 22.13+.
 
 ```bash
 pnpm install
@@ -33,113 +50,109 @@ pnpm compile
 pnpm test
 ```
 
-`pnpm test` runs the Mocha tests and the Solidity fuzz and invariant tests on Hardhat's local network. `pnpm coverage` writes an HTML report to `coverage/html`. `pnpm deploy` and `pnpm deploy-payments` deploy to that same network with a local MockUSDT; they do not need an RPC URL or a private key.
+`pnpm test` runs Mocha plus Solidity fuzz/invariant tests on Hardhat’s local network. `pnpm coverage` writes `coverage/html`. Local `pnpm deploy` / `pnpm deploy-payments` use an in-process MockUSDT (no RPC key required).
 
 ## Networks
 
 A public network is enabled only after its RPC URL is set in `.env`. Each network has its own deployer key.
 
-| Network | Chain ID | Native coin for gas | RPC variable | Deploy escrow | Deploy payments |
-| --- | --- | --- | --- | --- | --- |
-| Ethereum | 1 | ETH | `ETHEREUM_RPC_URL` | `pnpm deploy:ethereum` | `pnpm deploy-payments:ethereum` |
-| Ethereum Sepolia | 11155111 | ETH | `SEPOLIA_RPC_URL` | `pnpm deploy:sepolia` | `pnpm deploy-payments:sepolia` |
-| BNB Smart Chain (optional later) | 56 | BNB | `BNB_RPC_URL` | `pnpm deploy:bnb` | `pnpm deploy-payments:bnb` |
-| BNB Smart Chain testnet (optional later) | 97 | tBNB | `BNB_TESTNET_RPC_URL` | `pnpm deploy:bnb-testnet` | `pnpm deploy-payments:bnb-testnet` |
+| Network | Chain ID | RPC variable | Deploy escrow | Deploy payments |
+| --- | --- | --- | --- | --- |
+| Ethereum | 1 | `ETHEREUM_RPC_URL` | `pnpm deploy:ethereum` | `pnpm deploy-payments:ethereum` |
+| Ethereum Sepolia | 11155111 | `SEPOLIA_RPC_URL` | `pnpm deploy:sepolia` | `pnpm deploy-payments:sepolia` |
+| BNB Smart Chain (optional) | 56 | `BNB_RPC_URL` | `pnpm deploy:bnb` | `pnpm deploy-payments:bnb` |
+| BNB testnet (optional) | 97 | `BNB_TESTNET_RPC_URL` | `pnpm deploy:bnb-testnet` | `pnpm deploy-payments:bnb-testnet` |
 
-Sepolia has no official USDT. Deploy a mock first:
+Sepolia has no official USDT. Deploy a mintable mock first:
 
 ```bash
 pnpm deploy:mock-usdt:sepolia
+# optional: MOCK_USDT_MINT_TO=0x…,0x… MOCK_USDT_MINT_AMOUNT=1000
 ```
 
-Then copy the printed address into `SEPOLIA_USDT_ADDRESS`. For an optional later BSC testnet deploy, use `pnpm deploy:mock-usdt:bnb-testnet` the same way.
+Then set `SEPOLIA_USDT_ADDRESS` and redeploy EmpiyaP2P / EmpiyaPayments.
 
 ### USDT caps and deploy settings
 
-Amounts in `.env` are human USDT (for example `500`), not base units. On Ethereum, 1 USD₮ is 10^6 base units. The deploy script reads the token's `decimals()`, checks it against `<PREFIX>_USDT_DECIMALS`, and converts with `parseUnits`.
+Amounts in `.env` are human USDT (e.g. `500`), not base units. Deploy scripts check `token.decimals()` against `<PREFIX>_USDT_DECIMALS` and convert with `parseUnits`.
 
-| Variable | Meaning | Example |
-| --- | --- | --- |
-| `ETHEREUM_USDT_ADDRESS` | Native Tether USD₮ on Ethereum | `0xdAC17F958D2ee523a2206206994597C13D831ec7` |
-| `ETHEREUM_USDT_DECIMALS` | Must match `token.decimals()` | `6` |
-| `ETHEREUM_MAX_DEPOSIT_USDT` | Largest single P2P listing | `500` |
-| `ETHEREUM_MAX_OUTSTANDING_USDT` | Total USDT held in escrow | `5000` |
-| `ETHEREUM_MAX_PAYMENT_USDT` | Largest service-3 payment | `200` |
-| `ETHEREUM_MAX_PENDING_USDT` | Total unsettled service-3 payments | `2000` |
-| `ETHEREUM_OPERATOR_ADDRESS` | Backend hot key for release/refund/settle | — |
-| `ETHEREUM_PAYMENTS_OPERATOR_ADDRESS` | Separate hot key for EmpiyaPayments | — |
-| `ETHEREUM_TREASURY_ADDRESS` | Multisig that receives settled payments | — |
-| `RESERVATION_TIMEOUT_SECONDS` | Seller reclaim window (default 3600) | `3600` |
-| `PAYMENT_CLAIM_DELAY_SECONDS` | Payer backstop (default 7 days) | `604800` |
+| Variable | Meaning |
+| --- | --- |
+| `<PREFIX>_USDT_ADDRESS` | ERC-20 used as USDT |
+| `<PREFIX>_USDT_DECIMALS` | Must match `token.decimals()` (6 on Ethereum/Sepolia mock) |
+| `<PREFIX>_MAX_DEPOSIT_USDT` / `_MAX_OUTSTANDING_USDT` | EmpiyaP2P caps |
+| `<PREFIX>_MAX_PAYMENT_USDT` / `_MAX_PENDING_USDT` | EmpiyaPayments caps |
+| `<PREFIX>_OPERATOR_ADDRESS` | Hot key for P2P release/refund |
+| `<PREFIX>_PAYMENTS_OPERATOR_ADDRESS` | Hot key for settle/refund (can match P2P operator) |
+| `<PREFIX>_TREASURY_ADDRESS` | Receives settled payments |
+| `RESERVATION_TIMEOUT_SECONDS` | Seller reclaim window (default `3600`) |
+| `PAYMENT_CLAIM_DELAY_SECONDS` | Payer `claimBack` delay (default `604800`) |
 
-The same names with the `SEPOLIA_`, `BNB_`, and `BNB_TESTNET_` prefixes apply to those networks. Optional BSC tokens use 18 decimals.
+Prefixes: `ETHEREUM_`, `SEPOLIA_`, `BNB_`, `BNB_TESTNET_`.
 
-Take native USD₮ addresses from [Tether’s supported protocols](https://tether.to/en/supported-protocols/) only. Do not copy them from a chat. That page does not list USD₮ on BNB Smart Chain; the common BEP-20 “USDT” there is Binance-Peg BSC-USD (Binance-backed), not a Tether liability. Before mainnet, confirm the issuer, whether the token can freeze addresses or pause transfers, whether it supports `permit`, and how redemption works. Confirm that Safe is available on Ethereum for the admin multisig.
+Take mainnet USD₮ only from [Tether’s supported protocols](https://tether.to/en/supported-protocols/). That page does not list USD₮ on BNB Smart Chain.
 
 ## Contracts
 
 ### EmpiyaP2P / Escrow
 
-`EmpiyaP2P` is the public entry point. Users approve USDT to `EmpiyaP2P` (so an escrow swap does not strand approvals). It pulls tokens into the active `Escrow` and reverts unless the escrow's balance rose by exactly the requested amount.
+Public entry point. Users approve USDT to `EmpiyaP2P`. Tokens move into the active `Escrow`; the call reverts unless escrow balance rises by exactly the requested amount.
 
-- **Seller:** `deposit`, `withdraw` (Open, or after the reservation window), `reserve`, `depositAndReserve`, `expireReservation`.
-- **Operator (hot key):** `releaseToBuyer`, `refundSeller`, `expireReservation`, `pause`.
-- **Admin (Safe multisig):** limits, `unpause`, `setOperator`, escrow swap, surplus, `rescueToken`, two-step admin handover.
+- **Seller:** `deposit`, `withdraw`, `reserve`, `depositAndReserve`, `expireReservation`
+- **Operator:** `releaseToBuyer`, `refundSeller`, `expireReservation`, `pause`
+- **Admin:** limits, `unpause`, `setOperator`, escrow swap, surplus/rescue, two-step admin handover
 
-Each reservation gets a `reservationId`. `releaseToBuyer` and `refundSeller` must pass that id and the named buyer, so a late call cannot settle the wrong trade after a re-reservation.
+Each reservation has a `reservationId`. `releaseToBuyer` / `refundSeller` require that id and the named buyer so a late call cannot settle the wrong trade.
 
-`Reserved` carries `expiresAt` and `reservationId`. Clients should treat a reservation as expired once the current time reaches `expiresAt`, even while the stored status is still `Processing`.
+Status enum: `Open` → `Processing` (reserved) → `Complete` / `Cancelled`. Clients should treat a reservation as expired at `expiresAt` even while status is still `Processing`.
 
 ### EmpiyaPayments
 
-A separate contract for service 3. Settlement can only go to the pinned treasury or back to the payer. A compromised operator cannot redirect funds elsewhere. The worst case is a wrongful settlement to the treasury, which the platform can make whole.
+Service 3. Settlement can only go to the pinned treasury or back to the payer.
 
-- **Payer:** `pay(paymentId, amount)`, `claimBack` after `CLAIM_DELAY`.
-- **Operator:** `settle`, `refund`, `pause`.
-- **Admin:** limits, `unpause`, `setOperator`, surplus (to treasury only), `rescueToken`, two-step admin handover.
+- **Payer:** `pay(paymentId, amount)`, `claimBack` after `CLAIM_DELAY`
+- **Operator:** `settle`, `refund`, `pause`
+- **Admin:** limits, `unpause`, `setOperator`, surplus (treasury only), rescue, admin handover
 
 ### Roles and monitoring
 
-A compromised operator can release to a named buyer before fiat arrives, or refund. It cannot change settings or send USDT to an arbitrary address. Keep caps conservative and monitor `Released`, `Refunded`, `PaymentSettled`, and `PaymentRefunded`. Tether can freeze addresses; a frozen escrow or payments contract would lock every balance in it, which the code cannot prevent.
+A compromised operator can release to a named buyer early or refund; it cannot redirect USDT to an arbitrary address or change caps. Monitor `Released`, `Refunded`, `PaymentSettled`, `PaymentRefunded`. Tether (or a mock that freezes) can lock balances — contracts cannot prevent that.
 
-`EmpiyaP2P` emits `DepositLimitsUpdated`, `Paused`, `Unpaused`, and `OperatorUpdated`. `EmpiyaPayments` emits the matching payment events.
+## Backend rules (webapp)
 
-## Backend rules
-
-1. Before a payment prompt, check that the deposit is `Processing`, `recipient` is the buyer's registered wallet, and enough of the window remains.
-2. Pass that same wallet and the `reservationId` to `releaseToBuyer`. A revert after the window usually means the seller reclaimed first, so refund the buyer's mobile money.
-3. Credit the seller only after a `Released` event whose `buyer` matches.
-4. Convert between ZMW, USDT, and base units with big integers only. Round in the platform's favour: down for USDT paid to buyers, up for USDT owed by payers.
-5. Credit fiat only after the `finalized` block tag, or a confirmation threshold you choose. Use more than one RPC provider.
-6. Store the `chainId` with every listing, reservation, and payment.
-7. For EmpiyaPayments: quote an exact USDT amount with a short expiry; wait for finality before the PawaPay payout; settle only on a verified, idempotent success callback; refund only on confirmed failure; reconcile unknown outcomes; refuse payouts near the claim-delay deadline.
-8. Enforce a minimum trade size in the backend (for example 1 USDT). Sellers and payers need a little ETH for gas. Buyers who only receive USDT need none.
-9. Web-app approvals should use the exact amount, or reset the allowance to 0 first, because Ethereum USDT rejects changing one non-zero allowance to another.
+1. Before MoMo collect, confirm deposit is `Processing`, `recipient` is the buyer, and enough of the reservation window remains.
+2. Pass the same wallet + `reservationId` to `releaseToBuyer`.
+3. Credit seller fiat only after a matching `Released` event (then MoMo payout).
+4. Use big-integer math for ZMW ↔ USDT ↔ base units; round in the platform’s favour.
+5. Prefer finalized / multi-RPC confirmation before irreversible MoMo moves.
+6. Store `chainId` with every listing, reservation, and payment.
+7. EmpiyaPayments: exact USDT quote; wait for finality before payout; settle only on verified success; refund on confirmed failure.
+8. Enforce a minimum trade size in the backend. Sellers/payers need gas ETH; pure USDT receivers do not.
+9. Ethereum-style USDT: reset allowance to `0` before setting a new non-zero amount.
 
 ## Market notes
 
-Many users in the target market may hold USDT on Tron, which these EVM contracts do not cover. Confirm where prospective users hold balances before mainnet. Payments and foreign-exchange activity may need Zambian licensing; involve counsel.
+Many users may hold USDT on Tron, which these EVM contracts do not cover. Confirm where users hold balances before mainnet. Payments/FX activity may need Zambian licensing — involve counsel.
 
-## EmpiyaP2P functions
+## EmpiyaP2P functions (index)
 
 1. `proposeAdmin` / `cancelAdminProposal` / `acceptAdmin`
-2. `setOperator(address)` — `onlyAdmin`
-3. `setDepositLimits(uint256, uint256)` — `onlyAdmin`; emits `DepositLimitsUpdated`
-4. `pause()` — `onlyOperator`; `unpause()` — `onlyAdmin`
-5. `deposit(uint256 amount)` / `depositAndReserve(uint256 amount, address buyer)`
+2. `setOperator` — `onlyAdmin`
+3. `setDepositLimits` — `onlyAdmin`
+4. `pause` — `onlyOperator`; `unpause` — `onlyAdmin`
+5. `deposit` / `depositAndReserve`
 6. `withdraw` / `reserve` / `expireReservation`
-7. `releaseToBuyer(depositor, key, number, buyer, reservationId)` — `onlyOperator`
-8. `refundSeller(depositor, key, number, reservationId)` — `onlyOperator`
-9. `withdrawSurplus` / `withdrawRetiredEscrowSurplus` / `rescueToken` / `rescueRetiredEscrowToken`
-10. Views: `getUserTransaction`, `getUserTransactions`, `getUserTransactionsPage`, `getTotalBalance`, `token`, `TOKEN_DECIMALS`, `operator`, `maxDeposit`, `maxOutstanding`, `paused`
+7. `releaseToBuyer` / `refundSeller` — `onlyOperator`
+8. Surplus / rescue helpers
+9. Views: `getUserTransaction`, `getUserTransactions`, `getUserTransactionsPage`, `getTotalBalance`, `token`, `TOKEN_DECIMALS`, `operator`, limits, `paused`
 
-## EmpiyaPayments functions
+## EmpiyaPayments functions (index)
 
-1. `pay(bytes32 paymentId, uint256 amount)`
-2. `settle(paymentId)` / `refund(paymentId)` — `onlyOperator`
-3. `claimBack(paymentId)` — payer, after `CLAIM_DELAY`
+1. `pay(paymentId, amount)`
+2. `settle` / `refund` — `onlyOperator`
+3. `claimBack` — payer, after `CLAIM_DELAY`
 4. `setOperator` / `setPaymentLimits` / `pause` / `unpause` / admin handover
 5. `withdrawSurplus` / `rescueToken`
 6. `getPayment(paymentId)`
 
-Public values include `token`, `TOKEN_DECIMALS`, `treasury`, `CLAIM_DELAY`, `maxPayment`, `maxPending`, `totalPending`, `operator`, and `paused`.
+Public values include `token`, `TOKEN_DECIMALS`, `treasury`, `CLAIM_DELAY`, `maxPayment`, `maxPending`, `totalPending`, `operator`, `paused`.
